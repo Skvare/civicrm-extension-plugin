@@ -155,7 +155,7 @@ class Handler {
     if (!empty($extra['civicrm']['extensions'])) {
       $extensions_dir = $extra['civicrm']['extensions_dir'] ?? '';
       // Get extension dir path from composer file.
-      $extensions_install_path = $extra['civicrm']['extensions_install_path'];
+      $extensions_install_path = $extra['civicrm']['extensions_install_path'] ?? '';
       // If path no exist then use default path.
       if (empty($extensions_install_path)) {
         $extensions_install_path = './web/sites/default/civicrm/extensions/contrib';
