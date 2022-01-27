@@ -1,0 +1,20 @@
+{
+  "name": "civicrm/civicrm-extension-plugin",
+  "description": "A composer plugin to assist with installing CiviCRM Extensions.",
+  "type": "composer-plugin",
+  "license": "GPL-2.0-or-later",
+  "require": {
+    "composer-plugin-api": "^1.1 | ^2.0",
+    "pear/archive_tar": "^1.4",
+    "symfony/filesystem": "^2.7 || ^3.0 || ^4.0",
+    "symfony/process": "^2.7 || ^3.0 || ^4.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "Civi\\CivicrmExtensionPlugin\\": "src/"
+    }
+  },
+  "extra": {
+    "class": "Civi\\CivicrmExtensionPlugin\\Plugin"
+  }
+}
