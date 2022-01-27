@@ -2,6 +2,7 @@
 
 namespace Civi\CivicrmExtensionPlugin\Command;
 
+use Composer\Command\BaseCommand;
 use Civi\CivicrmExtensionPlugin\Handler;
 use Civi\CivicrmExtensionPlugin\Util;
 use Symfony\Component\Console\Input\InputInterface;
@@ -11,8 +12,11 @@ use Symfony\Component\Filesystem\Filesystem;
 /**
  * Command class for 'civicrm:download-extensions-new' command.
  */
-class CivicrmDownloadExtensionsCommand extends \Composer\Command\BaseCommand {
+class CivicrmDownloadExtensionsCommand extends BaseCommand {
 
+  /**
+   * Function to define composer command for extension download.
+   */
   protected function configure() {
     parent::configure();
 
@@ -20,6 +24,9 @@ class CivicrmDownloadExtensionsCommand extends \Composer\Command\BaseCommand {
       ->setDescription('Download CiviCRM extensions defined in composer.json');
   }
 
+  /**
+   * Function to execute the composer command.
+   */
   protected function execute(InputInterface $input, OutputInterface $output) {
     $this->createHandler()->downloadCivicrmExtensions();
   }
@@ -36,4 +43,5 @@ class CivicrmDownloadExtensionsCommand extends \Composer\Command\BaseCommand {
 
     return new Handler($this->getComposer(), $this->getIO(), $filesystem, $util);
   }
+
 }

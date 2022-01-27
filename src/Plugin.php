@@ -12,11 +12,17 @@ use Composer\Plugin\PluginInterface;
 use Symfony\Component\Filesystem\Filesystem;
 
 /**
+ * Class Plugin used for downloading extensions to desire location.
+ *
+ * @package Civi\CivicrmExtensionPlugin
+ *
  * Composer plugin to add support for CiviCRM.
  */
 class Plugin implements PluginInterface, EventSubscriberInterface, Capable {
 
   /**
+   * Handler object.
+   *
    * @var \Civi\CivicrmExtensionPlugin\Handler
    */
   protected $handler;
@@ -83,4 +89,5 @@ class Plugin implements PluginInterface, EventSubscriberInterface, Capable {
   public function uninstall(Composer $composer, IOInterface $io) {
 
   }
+
 }

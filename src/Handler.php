@@ -14,21 +14,29 @@ use Symfony\Component\Process\Process;
 class Handler {
 
   /**
+   * Composer object.
+   *
    * @var \Composer\Composer
    */
   protected $composer;
 
   /**
+   * IO object.
+   *
    * @var \Composer\IO\IOInterface
    */
   protected $io;
 
   /**
+   * File system object.
+   *
    * @var \Symfony\Component\Filesystem\Filesystem
    */
   protected $filesystem;
 
   /**
+   * Util Object.
+   *
    * @var \Civi\CivicrmExtensionPlugin\Util
    */
   protected $util;
@@ -56,6 +64,7 @@ class Handler {
    * Gets the path to the CiviCRM code.
    *
    * @return string
+   *   CiviCRM Core library path.
    */
   protected function getCivicrmCorePath() {
     $vendor_path = $this->composer->getConfig()->get('vendor-dir');
@@ -66,10 +75,11 @@ class Handler {
   /**
    * Gets the CiviCRM core version.
    *
-   * @param \Composer\Package\Package|NULL $package
+   * @param \Composer\Package\Package|null $package
    *   The package that was just installed or updated.
    *
    * @return mixed
+   *   Get CiviCRM Version from core file.
    */
   protected function getCivicrmCoreVersion(Package $package = NULL) {
     if (!$package) {
@@ -131,7 +141,7 @@ class Handler {
    *   The verbosity.
    */
   protected function output($message, $newline = TRUE, $verbosity = IOInterface::NORMAL) {
-    $this->io->write("> [civicrm-composer-plugin] {$message}", $newline, $verbosity);
+    $this->io->write("> [civicrm-extension-plugin] {$message}", $newline, $verbosity);
   }
 
   /**
@@ -143,17 +153,35 @@ class Handler {
     $extra = $package->getExtra();
 
     if (!empty($extra['civicrm']['extensions'])) {
-      $extensions_dir = $extra['civicrm']['extensions_dir'];
-      // local_extension.php must be git ignored. file should be present in root directory.
-      // e.g
+      $extensions_dir = $extra['civicrm']['extensions_dir'] ?? '';
+      // Get extension dir path from composer file.
+      $extensions_install_path = $extra['civicrm']['extensions_install_path'];
+      // If path no exist then use default path.
+      if (empty($extensions_install_path)) {
+        $extensions_install_path = './web/sites/default/civicrm/extensions/contrib';
+      }
+      // local_extension.php must be git ignored. file should be present in
+      // root directory.
+      // e.g.
       /*
       <?php
-        $extensions_dir = 'PATH_TO_EXTENSION/civicrm-extensions/';
+      // used when you have list of common extension are present. Used to
+      create soft link.
+      // overwrite extension directory path as per you local setup
+      $extensions_dir = 'PATH_TO_EXTENSION/civicrm-extensions/';
+      // overwrite extension install path as per you local setup
+      $extensions_install_path = '
+      ./web/sites/default/civicrm/extensions/contrib';
        */
       if (file_exists('./local_extension.php')) {
         include_once './local_extension.php';
       }
-      // make sure path end with DIRECTORY_SEPARATOR
+      // Create extension directory path if not exit.
+      if (!$this->filesystem->exists($extensions_install_path)) {
+        $this->filesystem->mkdir($extensions_install_path);
+      }
+
+      // Make sure path end with DIRECTORY_SEPARATOR.
       $extensions_dir = rtrim($extensions_dir, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
       $extensions_dir_core = getcwd() . '/vendor/civicrm/civicrm-core/ext/';
       foreach ($extra['civicrm']['extensions'] as $name => $info) {
@@ -175,7 +203,7 @@ class Handler {
         else {
           $extensions_dir_path = $extensions_dir;
         }
-        $this->downloadCivicrmExtension($name, $info['url'], $info['patches'], $extensions_dir_path, $info['link']);
+        $this->downloadCivicrmExtension($extensions_install_path, $name, $info['url'], $info['patches'], $extensions_dir_path, $info['link']);
       }
     }
   }
@@ -183,6 +211,8 @@ class Handler {
   /**
    * Download a single CiviCRM extension.
    *
+   * @param string $extension_path
+   *   The extension install path.
    * @param string $name
    *   The extension name.
    * @param string $url
@@ -194,13 +224,17 @@ class Handler {
    * @param string $link
    *   The Local Extension Directory Name for soft link.
    */
-  protected function downloadCivicrmExtension($name, $url = NULL, array $patches, $extensionDir = NULL, $link = NULL) {
-    $extension_path = './web/sites/default/civicrm/extensions/contrib';
+  protected function downloadCivicrmExtension($extension_path,
+                                              $name,
+                                              $url,
+                                              array $patches,
+                                              $extensionDir = NULL,
+                                              $link = NULL) {
     $destination_path = "{$extension_path}/{$name}";
 
-    // check link is present
+    // Check link is present.
     if (!empty($link)) {
-      // final path
+      // Final path.
       $link = $extensionDir . $link;
       if (file_exists($link)) {
         $this->output("<info>creating soft link for  {$link} to {$destination_path}...</info>");
@@ -263,4 +297,5 @@ class Handler {
       }
     }
   }
+
 }
