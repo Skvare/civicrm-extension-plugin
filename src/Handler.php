@@ -128,6 +128,7 @@ class Handler {
    */
   public function afterCivicrmInstallOrUpdate(Package $civicrm_package = NULL) {
     $this->downloadCivicrmExtensions();
+    $this->syncWebAssetsToWebRoot();
   }
 
   /**
@@ -143,6 +144,32 @@ class Handler {
   protected function output($message, $newline = TRUE, $verbosity = IOInterface::NORMAL) {
     $this->io->write("> [civicrm-extension-plugin] {$message}", $newline, $verbosity);
   }
+
+  /**
+   * Syncs web assets from CiviCRM to the web root.
+   */
+  public function syncWebAssetsToWebRoot() {
+    $source = $this->getCivicrmCorePath();
+    $destination = './web/libraries/civicrm';
+    $this->output("<info>Syncing CiviCRM web assets to /web/libraries/civicrm...</info>");
+    $vendor_path = $this->composer->getConfig()->get('vendor-dir');
+    $this->util->removeDirectoryRecursively("{$destination}/packages/kcfinder");
+    if ($this->filesystem->exists("{$vendor_path}/civicrm/civicrm-packages")) {
+      $this->filesystem->mirror("{$vendor_path}/civicrm/civicrm-packages/kcfinder", "{$destination}/packages/kcfinder");
+      $setting_php_file = '';
+    }
+    else {
+      $this->filesystem->mirror("{$source}/packages/kcfinder", "{$destination}/core/packages/kcfinder");
+      $setting_php_file = '/core';
+    }
+    $this->filesystem->copy("{$vendor_path}/civicrm/civicrm-extension-plugin/src/civicrm.config.php", "{$destination}{$setting_php_file}/civicrm.config.php");
+    $this->filesystem->copy("{$source}/extension-compatibility.json", "{$destination}/core/extension-compatibility.json");
+    $this->filesystem->copy("{$vendor_path}/civicrm/civicrm-extension-plugin/src/settings_location.txt", "{$destination}{$setting_php_file}/settings_location.php");
+    if ($this->filesystem->exists("{$source}/js/wysiwyg/ck-options.json")) {
+      $this->filesystem->copy("{$source}/js/wysiwyg/ck-options.json", "{$destination}/core/js/wysiwyg/ck-options.json");
+    }
+  }
+
 
   /**
    * Download CiviCRM extensions based on configuration in 'extra'.

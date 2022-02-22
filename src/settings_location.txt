@@ -1,0 +1,10 @@
+<?php
+
+$candidates = [];
+$candidates[] = dirname(dirname(dirname(__FILE__))) . '/sites';
+$candidates[] = dirname(dirname(dirname(dirname(__FILE__)))) . '/sites';
+foreach ($candidates as $candidate) {
+  if (is_dir($candidate)) {
+    define('CIVICRM_CONFDIR', $candidate);
+  }
+}
