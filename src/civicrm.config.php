@@ -126,6 +126,13 @@ function civicrm_conf_init() {
 }
 
 $settingsFile = civicrm_conf_init() . '/civicrm.settings.php';
+// auto load for .env file.
+$settingPathArray = explode('/web/sites/', $settingsFile);
+if (is_array($settingPathArray) && !empty($settingPathArray['0'])) {
+  if (file_exists($settingPathArray['0'] . '/.env')) {
+    include_once $settingPathArray['0'] . '/web/autoload.php';
+  }
+}
 define('CIVICRM_SETTINGS_PATH', $settingsFile);
 $error = include_once $settingsFile;
 if ($error == FALSE) {
