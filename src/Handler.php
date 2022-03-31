@@ -168,6 +168,13 @@ class Handler {
     if ($this->filesystem->exists("{$source}/js/wysiwyg/ck-options.json")) {
       $this->filesystem->copy("{$source}/js/wysiwyg/ck-options.json", "{$destination}/core/js/wysiwyg/ck-options.json");
     }
+    // civicrm assent plugin not syncing json file.
+    if ($this->filesystem->exists("{$source}/ext/ckeditor4/js/ck-options.json")) {
+      if (!$this->filesystem->exists("{$destination}/$setting_php_file/ext/ckeditor4/js")) {
+        $this->filesystem->mkdir("{$destination}/$setting_php_file/ext/ckeditor4/js");
+      }
+      $this->filesystem->copy("{$source}/ext/ckeditor4/js/ck-options.json", "{$destination}/$setting_php_file/ext/ckeditor4/js/ck-options.json");
+    }
   }
 
 
