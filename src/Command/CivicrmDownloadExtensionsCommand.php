@@ -30,6 +30,8 @@ class CivicrmDownloadExtensionsCommand extends BaseCommand {
   protected function execute(InputInterface $input, OutputInterface $output) {
     $this->createHandler()->downloadCivicrmExtensions();
     $this->createHandler()->syncWebAssetsToWebRoot();
+
+    return 0;
   }
 
   /**
