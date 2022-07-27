@@ -5,6 +5,7 @@ namespace Civi\CivicrmExtensionPlugin;
 use Composer\Composer;
 use Composer\IO\IOInterface;
 use Composer\Package\Package;
+use Composer\Util\ProcessExecutor;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Process\Process;
 
@@ -42,6 +43,11 @@ class Handler {
   protected $util;
 
   /**
+   * @var ProcessExecutor $executor
+   */
+  protected $executor;
+
+  /**
    * Handler constructor.
    *
    * @param \Composer\Composer $composer
@@ -57,6 +63,7 @@ class Handler {
     $this->composer = $composer;
     $this->io = $io;
     $this->filesystem = $filesystem;
+    $this->executor = new ProcessExecutor($this->io);
     $this->util = $util;
   }
 
@@ -323,13 +330,59 @@ class Handler {
 
     // If there are any patches for this extension.
     if (!empty($patches)) {
+      // The order here is intentional. p1 is most likely to apply with git apply.
+      // p0 is next likely. p2 is extremely unlikely, but for some special cases,
+      // it might be useful. p4 is useful for Magento 2 patches
+      $patch_levels = ['-p1', '-p0', '-p2', '-p4'];
       foreach ($patches as $patch) {
-        $this->output("|-> Applying patch: $patch");
-        $process = new Process("patch -p1", $destination_path);
-        $process->setInput(file_get_contents($patch));
-        $process->mustRun();
+        $this->output("\t|-> Applying patch: <info>$patch</info>");
+        foreach ($patch_levels as $patch_level) {
+          // --no-backup-if-mismatch here is a hack that fixes some
+          // differences between how patch works on windows and unix.
+          if ($patched = $this->executeCommand("patch %s --no-backup-if-mismatch -d %s < %s", $patch_level, $destination_path, $patch)) {
+            break;
+          }
+        }
+        if (!$patched) {
+          throw new \Exception("Cannot apply patch $patch");
+        }
       }
     }
+  }
+
+  /**
+   * Executes a shell command with escaping.
+   *
+   * @param string $cmd
+   * @return bool
+   */
+  protected function executeCommand($cmd) {
+    // Shell-escape all arguments except the command.
+    $args = func_get_args();
+    foreach ($args as $index => $arg) {
+      if ($index !== 0) {
+        $args[$index] = escapeshellarg($arg);
+      }
+    }
+
+    // And replace the arguments.
+    $command = call_user_func_array('sprintf', $args);
+    //print_r($command);
+    $output = '';
+    if ($this->io->isVerbose()) {
+      $this->io->write('<comment>' . $command . '</comment>');
+      $io = $this->io;
+      $output = function ($type, $data) use ($io) {
+        if ($type == Process::ERR) {
+          $io->write('<error>' . $data . '</error>');
+        }
+        else {
+          $io->write('<comment>' . $data . '</comment>');
+        }
+      };
+    }
+
+    return ($this->executor->execute($command, $output) == 0);
   }
 
 }
