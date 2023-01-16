@@ -6,6 +6,7 @@ use Composer\Command\BaseCommand;
 use Civi\CivicrmExtensionPlugin\Handler;
 use Civi\CivicrmExtensionPlugin\Util;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Filesystem\Filesystem;
 
@@ -21,14 +22,19 @@ class CivicrmDownloadExtensionsCommand extends BaseCommand {
     parent::configure();
 
     $this->setName('civicrm:download-extensions')
-      ->setDescription('Download CiviCRM extensions defined in composer.json');
+      ->setDescription('Download CiviCRM extensions defined in composer.json')
+      ->addOption('clean', 'c', InputOption::VALUE_NONE, 'clean extension directory.');
   }
 
   /**
    * Function to execute the composer command.
    */
   protected function execute(InputInterface $input, OutputInterface $output) {
-    $this->createHandler()->downloadCivicrmExtensions();
+    $cleanExtDir = FALSE;
+    if ($input->hasParameterOption('--clean', TRUE) || $input->hasParameterOption('-c', TRUE)) {
+      $cleanExtDir = TRUE;
+    }
+    $this->createHandler()->downloadCivicrmExtensions($cleanExtDir);
     $this->createHandler()->syncWebAssetsToWebRoot();
 
     return 0;

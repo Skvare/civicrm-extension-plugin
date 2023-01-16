@@ -187,8 +187,11 @@ class Handler {
 
   /**
    * Download CiviCRM extensions based on configuration in 'extra'.
+   *
+   * @param boolean $cleanExtDir
+   * @throws \Exception
    */
-  public function downloadCivicrmExtensions() {
+  public function downloadCivicrmExtensions($cleanExtDir = FALSE) {
     /** @var \Composer\Package\RootPackageInterface $package */
     $package = $this->composer->getPackage();
     $extra = $package->getExtra();
@@ -218,6 +221,10 @@ class Handler {
         include_once './local_extension.php';
       }
       // Create extension directory path if not exit.
+      if ($cleanExtDir) {
+        $this->output("<info>Cleaning {$extensions_install_path} directory...</info>");
+        $this->util->removeDirectoryRecursively($extensions_install_path, TRUE);
+      }
       if (!$this->filesystem->exists($extensions_install_path)) {
         $this->filesystem->mkdir($extensions_install_path);
       }
