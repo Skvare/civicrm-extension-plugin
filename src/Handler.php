@@ -251,7 +251,13 @@ class Handler {
         else {
           $extensions_dir_path = $extensions_dir;
         }
-        $this->downloadCivicrmExtension($extensions_install_path, $name, $info['url'], $info['patches'], $extensions_dir_path, $info['link']);
+        try {
+          $this->downloadCivicrmExtension($extensions_install_path, $name, $info['url'], $info['patches'], $extensions_dir_path, $info['link']);
+        }
+        catch (\Exception $exception) {
+          $msg = $exception->getMessage();
+          $this->output("<error>{$msg}</error>");
+        }
       }
     }
   }
@@ -317,7 +323,11 @@ class Handler {
     $firstFile = NULL;
     try {
       $zip = new \ZipArchive();
-      $zip->open($extension_archive_file);
+      $res = $zip->open($extension_archive_file);
+      if ($res !== TRUE) {
+        $this->output("<error>Unable to Download extension.</error>");
+        return;
+      }
       $firstFile = $zip->getNameIndex(0);
       $zip->extractTo($extension_path);
       $zip->close();
