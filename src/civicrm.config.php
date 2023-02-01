@@ -1,7 +1,8 @@
 <?php
 
 /**
- * This function has been copied from DRUPAL_ROOT/includes/bootstrap.inc
+ * @file
+ * This function has been copied from DRUPAL_ROOT/includes/bootstrap.inc.
  */
 
 /**
@@ -30,7 +31,6 @@
  *  9. $confdir/org
  *
  * 10. $confdir/default
- *
  */
 function civicrm_conf_init() {
   global $skipConfigError;
@@ -54,22 +54,22 @@ function civicrm_conf_init() {
     $confdir = CIVICRM_CONFDIR;
   }
   else {
-    // make it relative to civicrm.config.php, else php makes it relative
-    // to the script that invokes it
+    // Make it relative to civicrm.config.php, else php makes it relative
+    // to the script that invokes it.
     $moduleDir  = 'sites' . DIRECTORY_SEPARATOR . 'all' . DIRECTORY_SEPARATOR . 'modules';
     $contribDir = $moduleDir . DIRECTORY_SEPARATOR . 'contrib';
     $profileDir = DIRECTORY_SEPARATOR . 'profiles' . DIRECTORY_SEPARATOR;
-    // check to see if this is under sites/all/modules/contrib or subdir civicrm-core
+    // Check to see if this is under sites/all/modules/contrib or subdir civicrm-core.
     if (strpos($currentDir, $contribDir) !== FALSE || strpos($currentDir, 'civicrm-core') !== FALSE) {
       $confdir = $currentDir . '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '..';
     }
-    // check to see if this is under sites/all/modules
+    // Check to see if this is under sites/all/modules.
     elseif (strpos($currentDir, $moduleDir) !== FALSE) {
       $confdir = $currentDir . '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '..';
     }
-    // check to see if this is under profiles/[PROFILE]/modules
+    // Check to see if this is under profiles/[PROFILE]/modules.
     elseif (strpos($currentDir, $profileDir) !== FALSE) {
-      // check to see if this is under profiles/[PROFILE]/modules/contrib
+      // Check to see if this is under profiles/[PROFILE]/modules/contrib.
       if (strpos($currentDir, "contrib") !== FALSE) {
         $sublevels = 5;
       }
@@ -92,12 +92,12 @@ function civicrm_conf_init() {
     exit();
   }
 
-  // since drupal 7, alias could be defined in sites/sites.php
+  // Since drupal 7, alias could be defined in sites/sites.php.
   if (file_exists($confdir . "/sites.php")) {
     include $confdir . "/sites.php";
   }
   else {
-    $sites = array();
+    $sites = [];
   }
 
   $phpSelf  = array_key_exists('PHP_SELF', $_SERVER) ? $_SERVER['PHP_SELF'] : '';
@@ -112,7 +112,7 @@ function civicrm_conf_init() {
         $conf = "$confdir/$dir";
         return $conf;
       }
-      // check for alias
+      // Check for alias.
       if (isset($sites[$dir]) && file_exists("$confdir/{$sites[$dir]}/civicrm.settings.php")) {
         $conf = "$confdir/{$sites[$dir]}";
         return $conf;
@@ -120,13 +120,13 @@ function civicrm_conf_init() {
     }
   }
 
-  // FIXME: problem spot for Drupal 5.1 config dir layout
+  // FIXME: problem spot for Drupal 5.1 config dir layout.
   $conf = "$confdir/default";
   return $conf;
 }
 
 $settingsFile = civicrm_conf_init() . '/civicrm.settings.php';
-// auto load for .env file.
+// Auto load for .env file.
 $settingPathArray = explode('/web/sites/', $settingsFile);
 if (is_array($settingPathArray) && !empty($settingPathArray['0'])) {
   if (file_exists($settingPathArray['0'] . '/.env')) {
@@ -140,7 +140,7 @@ if ($error == FALSE) {
   exit();
 }
 
-// Load class loader
+// Load class loader.
 global $civicrm_root;
 require_once $civicrm_root . '/CRM/Core/ClassLoader.php';
 CRM_Core_ClassLoader::singleton()->register();
