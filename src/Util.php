@@ -32,7 +32,7 @@ class Util {
    *
    * @param string $dir
    *   The directory.
-   *  @param bool $keeCurrentDir
+   * @param bool $keeCurrentDir
    *   Keep current dir or not.
    */
   public function removeDirectoryRecursively($dir, $keeCurrentDir = FALSE) {

@@ -43,7 +43,9 @@ class Handler {
   protected $util;
 
   /**
-   * @var ProcessExecutor $executor
+   * ProcessExecutor object.
+   *
+   * @var \Composer\Util\ProcessExecutor
    */
   protected $executor;
 
@@ -175,7 +177,7 @@ class Handler {
     if ($this->filesystem->exists("{$source}/js/wysiwyg/ck-options.json")) {
       $this->filesystem->copy("{$source}/js/wysiwyg/ck-options.json", "{$destination}/core/js/wysiwyg/ck-options.json");
     }
-    // civicrm assent plugin not syncing json file.
+    // Civicrm assent plugin not syncing json file.
     if ($this->filesystem->exists("{$source}/ext/ckeditor4/js/ck-options.json")) {
       if (!$this->filesystem->exists("{$destination}/$setting_php_file/ext/ckeditor4/js")) {
         $this->filesystem->mkdir("{$destination}/$setting_php_file/ext/ckeditor4/js");
@@ -184,11 +186,12 @@ class Handler {
     }
   }
 
-
   /**
    * Download CiviCRM extensions based on configuration in 'extra'.
    *
-   * @param boolean $cleanExtDir
+   * @param bool $cleanExtDir
+   *   Flag to decide about cleaning the entire contrib extension dir.
+   *
    * @throws \Exception
    */
   public function downloadCivicrmExtensions($cleanExtDir = FALSE) {
@@ -347,9 +350,10 @@ class Handler {
 
     // If there are any patches for this extension.
     if (!empty($patches)) {
-      // The order here is intentional. p1 is most likely to apply with git apply.
-      // p0 is next likely. p2 is extremely unlikely, but for some special cases,
-      // it might be useful. p4 is useful for Magento 2 patches
+      // The order here is intentional. p1 is most likely to apply with git
+      // apply.
+      // p0 is next likely. p2 is extremely unlikely, but for some special
+      // cases, it might be useful. p4 is useful for Magento 2 patches.
       $patch_levels = ['-p1', '-p0', '-p2', '-p4'];
       foreach ($patches as $patch) {
         $this->output("\t|-> Applying patch: <info>$patch</info>");
@@ -371,7 +375,10 @@ class Handler {
    * Executes a shell command with escaping.
    *
    * @param string $cmd
+   *   Command to execute.
+   *
    * @return bool
+   *   Check patch applied or not.
    */
   protected function executeCommand($cmd) {
     // Shell-escape all arguments except the command.
@@ -384,7 +391,7 @@ class Handler {
 
     // And replace the arguments.
     $command = call_user_func_array('sprintf', $args);
-    //print_r($command);
+    // print_r($command);
     $output = '';
     if ($this->io->isVerbose()) {
       $this->io->write('<comment>' . $command . '</comment>');
