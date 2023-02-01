@@ -32,8 +32,10 @@ class Util {
    *
    * @param string $dir
    *   The directory.
+   *  @param bool $keeCurrentDir
+   *   Keep current dir or not.
    */
-  public function removeDirectoryRecursively($dir) {
+  public function removeDirectoryRecursively($dir, $keeCurrentDir = FALSE) {
     if (!file_exists($dir)) {
       return;
     }
@@ -42,12 +44,16 @@ class Util {
       new \RecursiveDirectoryIterator($dir, \RecursiveDirectoryIterator::SKIP_DOTS),
       \RecursiveIteratorIterator::CHILD_FIRST
     );
-
     foreach ($files as $fileinfo) {
+      if ($keeCurrentDir && $fileinfo->getFilename() == '.gitkeep') {
+        continue;
+      }
       $this->filesystem->remove($fileinfo->getRealPath());
     }
 
-    $this->filesystem->remove($dir);
+    if (!$keeCurrentDir) {
+      $this->filesystem->remove($dir);
+    }
   }
 
 }
