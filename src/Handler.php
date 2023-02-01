@@ -226,6 +226,16 @@ class Handler {
       // Create extension directory path if not exit.
       if ($cleanExtDir) {
         $this->output("<info>Cleaning {$extensions_install_path} directory...</info>");
+        // Find out the soft links and unlink it.
+        // There is bug in removeDirectoryRecursively which can not unlink
+        // the softlink https://github.com/php/php-src/issues/9674
+        // This is alternative solution to deal with softlinks.
+        $symLinks = glob($extensions_install_path . '/*', GLOB_NOCHECK);
+        foreach ($symLinks as $symLink) {
+          if (is_link($symLink)) {
+            $this->filesystem->remove($symLink);
+          }
+        }
         $this->util->removeDirectoryRecursively($extensions_install_path, TRUE);
       }
       if (!$this->filesystem->exists($extensions_install_path)) {
