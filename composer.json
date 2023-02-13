@@ -6,8 +6,8 @@
   "require": {
     "composer-plugin-api": "^1.1 | ^2.0",
     "pear/archive_tar": "^1.4",
-    "symfony/filesystem": "^2.7 || ^3.0 || ^4.0",
-    "symfony/process": "^2.7 || ^3.0 || ^4.0"
+    "symfony/filesystem": "^2.7 || ^3.0 || ^4.0 || ^6",
+    "symfony/process": "^2.7 || ^3.0 || ^4.0 || ^6"
   },
   "autoload": {
     "psr-4": {
