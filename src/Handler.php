@@ -196,7 +196,7 @@ class Handler {
     // Sync civicrm custom css file to the files directory; the same can be used as custom css in civicrm.
     if ($this->filesystem->exists("./patches/civicrm-custom.css")) {
       $this->output("<info>Syncing CiviCRM 'patches/civicrm-custom.css' to 'web/sites/default/files/civicrm-custom.css'</info>");
-      $this->filesystem->copy("./patches/civicrm-custom.css", "./web/sites/default/files/civicrm-custom.css");
+      $this->filesystem->copy("./patches/civicrm-custom.css", "./web/sites/default/files/civicrm-custom.css", TRUE);
     }
   }
 
