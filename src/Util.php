@@ -44,11 +44,11 @@ class Util {
       new \RecursiveDirectoryIterator($dir, \RecursiveDirectoryIterator::SKIP_DOTS),
       \RecursiveIteratorIterator::CHILD_FIRST
     );
-    foreach ($files as $fileinfo) {
-      if ($keeCurrentDir && $fileinfo->getFilename() == '.gitkeep') {
+    foreach ($files as $fileInfo) {
+      if ($keeCurrentDir && $fileInfo->getFilename() == '.gitkeep') {
         continue;
       }
-      $this->filesystem->remove($fileinfo->getRealPath());
+      $this->filesystem->remove($fileInfo->getRealPath());
     }
 
     if (!$keeCurrentDir) {

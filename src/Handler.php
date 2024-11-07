@@ -333,7 +333,7 @@ class Handler {
         $this->output("<warning>Target directory {$link} for {$name} not exist...</warning>");
       }
     }
-    // Remove any old copies of the extension laying around.
+    // Remove any old copies of the extension lying around.
     if ($this->filesystem->exists($destination_path)) {
       $this->util->removeDirectoryRecursively($destination_path);
     }
