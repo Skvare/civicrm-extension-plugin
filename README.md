@@ -14,8 +14,6 @@ You need a couple of dependencies first:
 - [Git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git)
 - CiviCRM
 
-*Make sure that you have a recent version of Composer!.*
-
 **CiviCRM is required for this plugin.**
 
 Put Skvare repository path in `composer.json` to locate this plugin under
@@ -86,6 +84,14 @@ The default path is 'web/sites/default/civicrm/extensions/contrib`.
              .
             }
 ```
+
+You can git ignore the contrib extension path like this in `.gitignore` file
+```bash
+/web/sites/*/civicrm/extensions/contrib/*
+!web/sites/*/civicrm/extensions/contrib/.gitkeep
+```
+`.gitkeep` is placeholder empty file.
+You can keep your custom extension under `web/sites/*/civicrm/extensions/custom/` directory wih GIT control.
 
 **How it works:**
 
