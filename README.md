@@ -1,8 +1,8 @@
 # Composer plugin for Drupal projects with CiviCRM
 
-This composer plugin can be added to a fully 'composerized' Drupal 9 / 10 site. Iin order to easily install CiviCRM extensions on it.
+This composer plugin can be added to a fully 'composerized' Drupal 9 / 10 / 11 site. In order to easily install CiviCRM extensions on it.
 
-This work on a Drupal 9, 10 site based on
+This work on a Drupal 9, 10, 11 site based on
 [drupal-composer/drupal-project](https://github.com/drupal-composer/drupal-project),
 So if you have an older Drupal 9 site, you'll need to convert it before using this plugin.
 
@@ -110,6 +110,28 @@ Run `composer list` command, this will show you
 ```
 
 Run `composer civicrm:download-extensions` command to download extension.
+
+Use `-c, --clean` for clean extension directory before downloading extensions.
+Example:
+```
+Run `composer civicrm:download-extensions -c` command to remove all extension from contrib before download extension.
+```
+Output:
+```composer
+composer civicrm:download-extensions -c
+> [civicrm-extension-plugin] Cleaning ./web/sites/default/civicrm/extensions/contrib directory...
+> [civicrm-extension-plugin] Downloading CiviCRM extension org.wikimedia.relationshipblock from https://github.com/eileenmcnaughton/org.wikimedia.relationshipblock/archive/1.3.zip...
+> [civicrm-extension-plugin] Downloading CiviCRM extension uk.co.vedaconsulting.gdpr from https://github.com/veda-consulting-company/uk.co.vedaconsulting.gdpr/archive/v2.7.zip...
+> [civicrm-extension-plugin] Downloading CiviCRM extension uk.co.vedaconsulting.mosaico from https://github.com/veda-consulting-company/uk.co.vedaconsulting.mosaico/archive/2.5.zip...
+> [civicrm-extension-plugin] Downloading CiviCRM extension org.civicrm.shoreditch from https://github.com/civicrm/org.civicrm.shoreditch/archive/1.0.0-beta.2.zip...
+> [civicrm-extension-plugin] Downloading CiviCRM extension org.civicrm.contactlayout from https://github.com/civicrm/org.civicrm.contactlayout/archive/1.7.1.zip...
+> [civicrm-extension-plugin] Downloading CiviCRM extension org.civicrm.angularprofiles from https://github.com/ginkgostreet/org.civicrm.angularprofiles/archive/v4.7.31-1.1.2.zip...
+> [civicrm-extension-plugin] Downloading CiviCRM extension net.ourpowerbase.sumfields from https://github.com/progressivetech/net.ourpowerbase.sumfields/archive/v4.0.2.zip...
+> [civicrm-extension-plugin] Downloading CiviCRM extension org.civicrm.module.cividiscount from https://github.com/civicrm/org.civicrm.module.cividiscount/archive/3.8.1.zip...
+> [civicrm-extension-plugin] Downloading CiviCRM extension ca.civicrm.logviewer from https://github.com/adixon/ca.civicrm.logviewer/archive/1.2.zip...
+> [civicrm-extension-plugin] 	|-> Applying patch: ./patches/logviewer.patch
+> [civicrm-extension-plugin] Syncing CiviCRM web assets to /web/libraries/civicrm...
+```
 
 
 This also syn civicrm web assets like:
