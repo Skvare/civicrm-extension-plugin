@@ -3,6 +3,28 @@
   "description": "A composer plugin to assist with installing CiviCRM Extensions.",
   "type": "composer-plugin",
   "license": "GPL-2.0-or-later",
+  "authors": [
+    {
+      "name": "Skvare",
+      "email": "info@skvare.com",
+      "homepage": "https://skvare.com",
+      "role": "Sponsor"
+    },
+    {
+      "name": "Mark Hanna",
+      "email": "mark@skvare.com",
+      "homepage": "https://github.com/jackrabbithanna",
+      "role": "Software Architect"
+    },
+    {
+      "name": "Sunil Pawar",
+      "email": "sunil@skvare.com",
+      "homepage": "https://github.com/sunilpawar",
+      "role": "Developer"
+    }
+  ],
+  "homepage": "https://skvare.com",
+  "keywords": ["civicrm", "extension", "plugin"],
   "require": {
     "composer-plugin-api": "^1.1 | ^2.0",
     "pear/archive_tar": "^1.4",
@@ -12,6 +34,11 @@
   "autoload": {
     "psr-4": {
       "Civi\\CivicrmExtensionPlugin\\": "src/"
+    }
+  },
+  "config": {
+    "allow-plugins": {
+      "civicrm/civicrm-extension-plugin": true
     }
   },
   "extra": {
