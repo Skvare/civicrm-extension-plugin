@@ -158,6 +158,14 @@ class Handler {
    * Syncs web assets from CiviCRM to the web root.
    */
   public function syncWebAssetsToWebRoot() {
+    /** @var \Composer\Package\RootPackageInterface $package */
+    $package = $this->composer->getPackage();
+    $extra = $package->getExtra();
+    // No need to sync any file in WordPress.
+    if (array_key_exists('cms_type', $extra['civicrm']) &&
+      strtolower($extra['civicrm']['cms_type']) == 'wordpress') {
+      return;
+    }
     $source = $this->getCivicrmCorePath();
     $destination = './web/libraries/civicrm';
     $this->output("<info>Syncing CiviCRM web assets to /web/libraries/civicrm...</info>");
