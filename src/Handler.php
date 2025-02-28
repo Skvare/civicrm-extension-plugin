@@ -220,6 +220,40 @@ class Handler {
     /** @var \Composer\Package\RootPackageInterface $package */
     $package = $this->composer->getPackage();
     $extra = $package->getExtra();
+    // No need to sync any file in WordPress.
+    if (array_key_exists('cms_type', $extra['civicrm']) &&
+      strtolower($extra['civicrm']['cms_type']) == 'wordpress' && !empty($extra['civicrm']['civicrm_wp_plugin_link'])) {
+      $civicrm_vendor_dir = getcwd() . '/vendor/civicrm/civicrm-core';
+      $civicrm_plugin = getcwd() . '/wp-content/plugins/civicrm/civicrm';
+      $this->output("<info>Check CiviCRM plugin soft link {$civicrm_plugin} to {$civicrm_vendor_dir}...</info>");
+      if (is_link($civicrm_plugin)) {
+        $this->output("<info>Remove link...</info>");
+        $this->filesystem->remove($civicrm_plugin);
+      }
+      try {
+        $this->output("<info>Create link...</info>");
+        $this->filesystem->symlink($civicrm_vendor_dir, $civicrm_plugin);
+      }
+      catch (IOException $exception) {
+        $this->output("<error>Failed to create soft link for {$civicrm_plugin} to {$civicrm_vendor_dir}...</error>");
+      }
+      // create packages soft link
+      $civicrm_packages_vendor_dir = getcwd() . '/vendor/civicrm/civicrm-packages';
+      $civicrm_packages_dir = getcwd() . '/wp-content/plugins/civicrm/civicrm/packages';
+      $this->output("<info>Check CiviCRM plugin soft link {$civicrm_packages_dir} to {$civicrm_packages_vendor_dir}...</info>");
+      if (is_link($civicrm_packages_dir)) {
+        $this->output("<info>Remove link...</info>");
+        $this->filesystem->remove($civicrm_packages_dir);
+      }
+      try {
+        $this->output("<info>Create link...</info>");
+        $this->filesystem->symlink($civicrm_packages_vendor_dir, $civicrm_packages_dir);
+      }
+      catch (IOException $exception) {
+        $this->output("<error>Failed to create soft link for {$civicrm_packages_dir} to {$civicrm_packages_vendor_dir}...</error>");
+      }
+
+    }
 
     if (!empty($extra['civicrm']['extensions'])) {
       $extensions_dir = $extra['civicrm']['extensions_dir'] ?? '';
