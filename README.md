@@ -24,6 +24,13 @@ Put Skvare repository path in `composer.json` to locate this plugin under
     "url":  "https://github.com/Skvare/civicrm-extension-plugin"
 },
 ```
+OR 
+```
+{
+    "type": "vcs",
+    "url":  "https://github.com/Skvare/civicrm-extension-plugin"
+}
+``` 
 Then Run:
 ```
 composer require civicrm/civicrm-extension-plugin
