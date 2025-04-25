@@ -223,8 +223,15 @@ class Handler {
     // No need to sync any file in WordPress.
     if (array_key_exists('cms_type', $extra['civicrm']) &&
       strtolower($extra['civicrm']['cms_type']) == 'wordpress' && !empty($extra['civicrm']['civicrm_wp_plugin_link'])) {
+      $civicrm_plugin = $extra['civicrm']['civicrm_plugin_path'] ?? '';
+      // If path no exist then use default path.
+      if (empty($civicrm_plugin)) {
+        $civicrm_plugin = getcwd() . '/wp-content/plugins/civicrm/civicrm';
+      }
+      else {
+        $civicrm_plugin = getcwd() . $civicrm_plugin;
+      }
       $civicrm_vendor_dir = getcwd() . '/vendor/civicrm/civicrm-core';
-      $civicrm_plugin = getcwd() . '/wp-content/plugins/civicrm/civicrm';
       $this->output("<info>Check CiviCRM plugin soft link {$civicrm_plugin} to {$civicrm_vendor_dir}...</info>");
       if (is_link($civicrm_plugin)) {
         $this->output("<info>Remove link...</info>");
@@ -239,7 +246,7 @@ class Handler {
       }
       // create packages soft link
       $civicrm_packages_vendor_dir = getcwd() . '/vendor/civicrm/civicrm-packages';
-      $civicrm_packages_dir = getcwd() . '/wp-content/plugins/civicrm/civicrm/packages';
+      $civicrm_packages_dir = $civicrm_plugin . '/packages';
       $this->output("<info>Check CiviCRM plugin soft link {$civicrm_packages_dir} to {$civicrm_packages_vendor_dir}...</info>");
       if (is_link($civicrm_packages_dir)) {
         $this->output("<info>Remove link...</info>");
