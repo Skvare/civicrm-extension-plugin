@@ -50,6 +50,13 @@ class Handler {
   protected $executor;
 
   /**
+   * Flag to decide about composer exit on extensions patch failure.
+   *
+   * @var bool
+   */
+  protected $composerExitOnExtensionsPatchFailure = FALSE;
+
+  /**
    * Handler constructor.
    *
    * @param \Composer\Composer $composer
@@ -220,6 +227,12 @@ class Handler {
     /** @var \Composer\Package\RootPackageInterface $package */
     $package = $this->composer->getPackage();
     $extra = $package->getExtra();
+    // composer-exit-on-extensions-patch-failure
+    if (array_key_exists('civicrm', $extra) && array_key_exists('composer_exit_on_extensions_patch_failure', $extra['civicrm']) &&
+      !empty($extra['civicrm']['composer_exit_on_extensions_patch_failure'])) {
+      $this->composerExitOnExtensionsPatchFailure = TRUE;
+    }
+
     // No need to sync any file in WordPress.
     if (array_key_exists('cms_type', $extra['civicrm']) &&
       strtolower($extra['civicrm']['cms_type']) == 'wordpress' && !empty($extra['civicrm']['civicrm_wp_plugin_link'])) {
@@ -333,6 +346,9 @@ class Handler {
         catch (\Exception $exception) {
           $msg = $exception->getMessage();
           $this->output("<error>{$msg}</error>");
+          if ($this->composerExitOnExtensionsPatchFailure) {
+            exit(1);
+          }
         }
       }
     }
@@ -393,7 +409,14 @@ class Handler {
     }
     $extension_archive_file = tempnam(sys_get_temp_dir(), "drupal-civicrm-extension-");
     $this->output("<info>Downloading CiviCRM extension {$name} from {$url}...</info>");
-    $this->filesystem->dumpFile($extension_archive_file, fopen($url, 'r'));
+    try {
+      $this->filesystem->dumpFile($extension_archive_file, fopen($url, 'r'));
+    }
+    catch (\Exception $e) {
+      $msg = $e->getMessage();
+      $this->output("<info>{$msg}</info>");
+      throw new \Exception("Failed to download CiviCRM extension {$name} from {$url}.");
+    }
     // Extract the zip archive (recording the first file to figure out what
     // path it extracts to).
     $firstFile = NULL;
