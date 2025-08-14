@@ -24,13 +24,13 @@ Put Skvare repository path in `composer.json` to locate this plugin under
     "url":  "https://github.com/Skvare/civicrm-extension-plugin"
 },
 ```
-OR 
+OR
 ```
 {
     "type": "vcs",
     "url":  "https://github.com/Skvare/civicrm-extension-plugin"
 }
-``` 
+```
 Then Run:
 ```
 composer require civicrm/civicrm-extension-plugin
@@ -107,6 +107,7 @@ You can keep your custom extension under `web/sites/*/civicrm/extensions/custom/
   `extensions_install_path` in `composer.json` file, if it is not mentioned then
   default path is `web/sites/default/civicrm/extensions/contrib`.
 * Extension also downloaded/refreshed when civicrm core installed or updated action happened through composer.
+* `composer_exit_on_extensions_patch_failure` is a boolean value, if set to true then composer will exit with error code if any patch fails to apply or failed to download the extension.
 
 ### After installation and configuration:
 Run `composer list` command, this will show you
