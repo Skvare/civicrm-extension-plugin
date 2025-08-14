@@ -85,6 +85,7 @@ The default path is 'web/sites/default/civicrm/extensions/contrib`.
 ```composer
       "civicrm": {
             "extensions_install_path": "./web/sites/default/civicrm/extensions/contrib",
+            "composer_exit_on_extensions_patch_failure": true,
             "extensions": {
              .
              .
