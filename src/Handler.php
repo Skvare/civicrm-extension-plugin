@@ -398,10 +398,7 @@ class Handler {
         $this->output("<warning>Target directory {$link} for {$name} not exist...</warning>");
       }
     }
-    // Remove any old copies of the extension lying around.
-    if ($this->filesystem->exists($destination_path)) {
-      $this->util->removeDirectoryRecursively($destination_path);
-    }
+
     if (empty($url)) {
       $this->output("<error>Download Url missing for {$destination_path}...</error>");
 
@@ -417,6 +414,13 @@ class Handler {
       $this->output("<info>{$msg}</info>");
       throw new \Exception("Failed to download CiviCRM extension {$name} from {$url}.");
     }
+
+    // Remove any old copies of the extension lying around.
+    // only remove if you able to download the zip file.
+    if ($this->filesystem->exists($destination_path)) {
+      $this->util->removeDirectoryRecursively($destination_path);
+    }
+
     // Extract the zip archive (recording the first file to figure out what
     // path it extracts to).
     $firstFile = NULL;
