@@ -407,7 +407,21 @@ class Handler {
     $extension_archive_file = tempnam(sys_get_temp_dir(), "drupal-civicrm-extension-");
     $this->output("<info>Downloading CiviCRM extension {$name} from {$url}...</info>");
     try {
-      $this->filesystem->dumpFile($extension_archive_file, fopen($url, 'r'));
+      $options = [
+        'http' => [
+          'method' => 'GET',
+          'header' => [
+            'User-Agent:  Wget/1.0',
+            'Accept: */*',
+            'Accept-Encoding: identity',
+          ],
+        ]
+      ];
+
+      $context = stream_context_create($options);
+      $handle = fopen($url, "r", FALSE, $context);
+      $content = stream_get_contents($handle);
+      $this->filesystem->dumpFile($extension_archive_file, $content);
     }
     catch (\Exception $e) {
       $msg = $e->getMessage();
