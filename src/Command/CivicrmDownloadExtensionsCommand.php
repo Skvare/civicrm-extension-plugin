@@ -29,7 +29,7 @@ class CivicrmDownloadExtensionsCommand extends BaseCommand {
   /**
    * Function to execute the composer command.
    */
-  protected function execute(InputInterface $input, OutputInterface $output) {
+  protected function execute(InputInterface $input, OutputInterface $output): int {
     $cleanExtDir = FALSE;
     if ($input->hasParameterOption('--clean', TRUE) || $input->hasParameterOption('-c', TRUE)) {
       $cleanExtDir = TRUE;
