@@ -1,0 +1,15 @@
+<?php
+
+// all possible location type to locate civicrm.settings.php file
+$candidates = [];
+$candidates[] = dirname(__FILE__, 4) . '/uploads/civicrm';
+$candidates[] = dirname(__FILE__, 4) . '/wp-content/uploads/civicrm';
+$candidates[] = dirname(__FILE__, 3) . '/uploads/civicrm';
+$candidates[] = dirname(__FILE__, 3) . '/wp-content/uploads/civicrm';
+$candidates[] = dirname(__FILE__, 2) . '/civicrm';
+foreach ($candidates as $candidate) {
+  if (is_dir($candidate) && file_exists($candidate . DIRECTORY_SEPARATOR . 'civicrm.settings.php')) {
+    define('CIVICRM_CONFDIR', $candidate);
+    break;
+  }
+}
