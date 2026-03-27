@@ -1,8 +1,8 @@
-# Composer plugin for Drupal projects with CiviCRM
+# Composer plugin for Drupal/WordPress projects with CiviCRM
 
-This composer plugin can be added to a fully 'composerized' Drupal 9 / 10 / 11 site. In order to easily install CiviCRM extensions on it.
+This composer plugin can be added to a fully 'composerized' Drupal 9 / 10 / 11 or WordPress site. In order to easily install CiviCRM extensions on it.
 
-This work on a Drupal 9, 10, 11 site based on
+This works on a Drupal 9, 10, 11 site based on
 [drupal-composer/drupal-project](https://github.com/drupal-composer/drupal-project),
 So if you have an older Drupal 9 site, you'll need to convert it before using this plugin.
 
@@ -81,7 +81,7 @@ Example:
 
 In the composer extra snippet, we can define civicrm extension path.
 
-The default path is 'web/sites/default/civicrm/extensions/contrib`.
+The default path is `web/sites/default/civicrm/extensions/contrib`.
 ```composer
       "civicrm": {
             "extensions_install_path": "./web/sites/default/civicrm/extensions/contrib",
@@ -99,7 +99,46 @@ You can git ignore the contrib extension path like this in `.gitignore` file
 !web/sites/*/civicrm/extensions/contrib/.gitkeep
 ```
 `.gitkeep` is placeholder empty file.
-You can keep your custom extension under `web/sites/*/civicrm/extensions/custom/` directory wih GIT control.
+You can keep your custom extension under `web/sites/*/civicrm/extensions/custom/` directory with GIT control.
+
+## WordPress Support
+
+This plugin supports WordPress sites with CiviCRM. Set `cms_type` to `wordpress` in your `composer.json` to enable WordPress-specific behavior:
+
+```json
+"extra": {
+    "civicrm": {
+        "cms_type": "wordpress",
+        "extensions_install_path": "./wp-content/uploads/civicrm/ext/contrib",
+        "extensions": {
+            ...
+        }
+    }
+}
+```
+
+### WordPress CiviCRM Asset Sync
+
+By default, asset syncing is skipped for WordPress sites. To enable syncing CiviCRM web assets on a WordPress site, specify a custom asset destination path using the `civicrm-asset` configuration key:
+
+```json
+"extra": {
+    "civicrm": {
+        "cms_type": "wordpress"
+    },
+    "civicrm-asset": {
+        "path": "wp-content/plugins/civicrm/civicrm"
+    }
+}
+```
+
+When `civicrm-asset.path` is set, the plugin will sync CiviCRM web assets to that path and deploy a WordPress-compatible `settings_location.php` that automatically searches the following candidate directories for `civicrm.settings.php`:
+
+- `uploads/civicrm` (up to 4 levels up)
+- `wp-content/uploads/civicrm` (up to 4 and 3 levels up)
+- `civicrm` (2 levels up)
+
+If `civicrm-asset.path` is not set on a WordPress site, asset syncing is skipped entirely (Drupal sites always sync to `./web/libraries/civicrm` by default).
 
 **How it works:**
 
@@ -109,6 +148,7 @@ You can keep your custom extension under `web/sites/*/civicrm/extensions/custom/
   default path is `web/sites/default/civicrm/extensions/contrib`.
 * Extension also downloaded/refreshed when civicrm core installed or updated action happened through composer.
 * `composer_exit_on_extensions_patch_failure` is a boolean value, if set to true then composer will exit with error code if any patch fails to apply or failed to download the extension.
+* An existing extension directory is only removed after a new zip archive has been successfully downloaded, preventing data loss if the download fails.
 
 ### After installation and configuration:
 Run `composer list` command, this will show you
@@ -143,8 +183,7 @@ composer civicrm:download-extensions -c
 ```
 
 
-This also syn civicrm web assets like:
+This also syncs CiviCRM web assets like:
 * kcfinder
 * extension-compatibility.json
 * ck-options.json
-
