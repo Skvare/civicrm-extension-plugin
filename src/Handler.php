@@ -196,7 +196,7 @@ class Handler {
     }
     $this->filesystem->copy("{$vendor_path}/civicrm/civicrm-extension-plugin/src/civicrm.config.php", "{$destination}{$setting_php_file}/civicrm.config.php");
     $this->filesystem->copy("{$source}/extension-compatibility.json", "{$destination}/core/extension-compatibility.json");
-    if (strtolower($extra['civicrm']['cms_type']) == 'wordpress') {
+    if (array_key_exists('cms_type', $extra['civicrm']) && strtolower($extra['civicrm']['cms_type']) == 'wordpress') {
       $this->filesystem->copy("{$vendor_path}/civicrm/civicrm-extension-plugin/src/settings_location_wp.txt", "{$destination}{$setting_php_file}/settings_location.php");
     }
     else {
