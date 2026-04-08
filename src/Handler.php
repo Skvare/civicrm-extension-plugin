@@ -170,7 +170,7 @@ class Handler {
     $extra = $package->getExtra();
     // No need to sync any file in WordPress.
     if (array_key_exists('cms_type', $extra['civicrm']) &&
-      strtolower($extra['civicrm']['cms_type']) == 'wordpress') {
+      in_array(strtolower($extra['civicrm']['cms_type']), ['wordpress', 'standalone'])) {
       if (!empty($extra['civicrm-asset']['path'])) {
         $destination = $extra['civicrm-asset']['path'];
         $destination = getcwd() . DIRECTORY_SEPARATOR . $destination;
