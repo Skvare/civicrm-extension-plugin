@@ -97,7 +97,7 @@ class Handler {
    * @return mixed
    *   Get CiviCRM Version from core file.
    */
-  protected function getCivicrmCoreVersion(Package $package = NULL) {
+  protected function getCivicrmCoreVersion(?Package $package = NULL) {
     if (!$package) {
       $package = $this->getCivicrmCorePackage();
       if (!$package) {
@@ -142,7 +142,7 @@ class Handler {
   /**
    * Does all the stuff we want to do after CiviCRM has been installed.
    */
-  public function afterCivicrmInstallOrUpdate(Package $civicrm_package = NULL) {
+  public function afterCivicrmInstallOrUpdate(?Package $civicrm_package = NULL) {
     $this->downloadCivicrmExtensions();
     $this->syncWebAssetsToWebRoot();
   }
